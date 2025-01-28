@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 
 class QuesionBar extends StatefulWidget {
   final TextEditingController controller;
-  const QuesionBar({super.key, required this.controller});
+  final Function() tapToListen;
+  const QuesionBar(
+      {super.key, required this.controller, required this.tapToListen});
 
   @override
   State<QuesionBar> createState() => _QuesionBarState();
@@ -27,10 +29,13 @@ class _QuesionBarState extends State<QuesionBar> {
           color: utilSerchColor,
           size: 28,
         ),
-        suffixIcon: Icon(
-          Icons.mic,
-          color: utilTextColor,
-          size: 28,
+        suffixIcon: GestureDetector(
+          onTap: widget.tapToListen,
+          child: Icon(
+            Icons.mic,
+            color: utilTextColor,
+            size: 28,
+          ),
         ),
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(24),

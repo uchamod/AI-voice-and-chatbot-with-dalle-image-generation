@@ -1,8 +1,9 @@
-import 'package:ai_assistent_with_chatgpt/utils/colors..dart';
-import 'package:ai_assistent_with_chatgpt/widgets/homewidgets/categoryCard.dart';
-import 'package:ai_assistent_with_chatgpt/widgets/homewidgets/herosection.dart';
+import 'package:ai_assistent_with_chatgpt/pages/chat/chatpage.dart';
+import 'package:ai_assistent_with_chatgpt/pages/initialpage/initialpage.dart';
 import 'package:ai_assistent_with_chatgpt/widgets/homewidgets/searchbar.dart';
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -13,52 +14,80 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final TextEditingController _controller = TextEditingController();
+  final SpeechToText _speechToText = SpeechToText();
+  bool isSpeechEnabeld = false;
+  String recognizedText = '';
+
+  @override
+  void initState() {
+    _initSpeech();
+    super.initState();
+  }
+
+  /// This has to happen only once per app
+  void _initSpeech() async {
+    isSpeechEnabeld = await _speechToText.initialize();
+    setState(() {});
+  }
+
+  /// Each time to start a speech recognition session
+  Future<void> _startListening() async {
+    await _speechToText.listen(onResult: _onSpeechResult);
+    setState(() {});
+  }
+
+  /// Manually stop the active speech recognition session
+  /// Note that there are also timeouts that each platform enforces
+  /// and the SpeechToText plugin supports setting timeouts on the
+  /// listen method.
+  Future<void> _stopListening() async {
+    await _speechToText.stop();
+    setState(() {});
+  }
+
+  /// This is the callback that the SpeechToText plugin calls when
+  /// the platform returns recognized words.
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      recognizedText = result.recognizedWords;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            child: Column(
-              children: [
-                //hero section
-                Herosection(),
-                SizedBox(
-                  height: 15,
-                ),
-                //chat
-                CategoryCard(
-                  title: "Real Time Chat",
-                  discription:
-                      "Experience instant and intelligent conversations with our real-time chat feature. Get accurate responses to your queries with smooth, fast, and interactive messaging that feels natural and intuitive.",
-                  backgroundColor: utilgreenColor,
-                ),
-                //voice
-                CategoryCard(
-                  title: "Voice Assistant",
-                  discription:
-                      "Interact hands-free with an intelligent voice assistant that understands and processes your commands. Enjoy seamless real-time conversations, accurate voice recognition, and helpful responses for an engaging, smart communication experience",
-                  backgroundColor: utilpinkColor,
-                ),
-                //image generation
-                CategoryCard(
-                  title: "GEN I",
-                  discription:
-                      "Unleash your creativity with AI-powered image generation. Simply describe your vision, and let the app transform it into stunning visuals, perfect for designs, concepts, or just fun explorations",
-                  backgroundColor: utilyellowColor,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                //serach bar
-                QuesionBar(
-                  controller: _controller,
-                ),
-              ],
-            ),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          //
+          child: Column(
+            children: [
+              Expanded(
+                child: recognizedText == ""
+                    ? Initialpage()
+                    : Chatpage(question: recognizedText),
+              ),
+
+              //textbox
+
+              QuesionBar(
+                tapToListen: () async {
+                  if (_speechToText.isNotListening &
+                      await _speechToText.hasPermission) {
+                    //if permission allowd start listning
+                    await _startListening();
+                  } else if (_speechToText.isListening) {
+                    //already listning stop the lisning
+                    await _stopListening();
+                  } else {
+                    _initSpeech();
+                  }
+                },
+                controller: _controller,
+              ),
+            ],
           ),
+          //
         ),
       ),
     );

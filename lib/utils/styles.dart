@@ -12,3 +12,5 @@ final textName = GoogleFonts.inriaSerif(
     color: utilTextColor, fontSize: 36, fontWeight: FontWeight.bold);
 final textSearch = GoogleFonts.inriaSerif(
     color: utilSerchColor, fontSize: 16, fontWeight: FontWeight.bold);
+final textChat = GoogleFonts.inriaSerif(
+    color: utilTextColor, fontSize: 14, fontWeight: FontWeight.bold);

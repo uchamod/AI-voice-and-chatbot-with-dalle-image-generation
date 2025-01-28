@@ -6,3 +6,4 @@ final utilSerchColor = Color(0xff0C0C0C).withOpacity(0.5);
 final utilgreenColor = Color(0xff00FF9C);
 final utilpinkColor = Color(0xffCB9DF0);
 final utilyellowColor = Color(0xffFFE893);
+final utilQuestionColor = Color(0xffECEBDE);
