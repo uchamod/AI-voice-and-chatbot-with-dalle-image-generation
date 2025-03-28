@@ -2,25 +2,25 @@ import 'package:ai_assistent_with_chatgpt/utils/colors..dart';
 import 'package:ai_assistent_with_chatgpt/utils/styles.dart';
 import 'package:flutter/material.dart';
 
-class QuesionBar extends StatefulWidget {
+class QuesionBar extends StatelessWidget {
   final TextEditingController controller;
   final Function() tapToListen;
+  final void Function(String)? tapToSearch;
   const QuesionBar(
-      {super.key, required this.controller, required this.tapToListen});
+      {super.key,
+      required this.controller,
+      required this.tapToListen,
+      required this.tapToSearch});
 
-  @override
-  State<QuesionBar> createState() => _QuesionBarState();
-}
-
-class _QuesionBarState extends State<QuesionBar> {
   @override
   Widget build(BuildContext context) {
     //search bar field
     return TextFormField(
-      controller: widget.controller,
+      controller: controller,
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.text,
       cursorColor: utilSerchColor,
+      onFieldSubmitted: tapToSearch,
       decoration: InputDecoration(
         hintText: "Ask anything...",
         hintStyle: textSearch,
@@ -30,7 +30,7 @@ class _QuesionBarState extends State<QuesionBar> {
           size: 28,
         ),
         suffixIcon: GestureDetector(
-          onTap: widget.tapToListen,
+          onTap: tapToListen,
           child: Icon(
             Icons.mic,
             color: utilTextColor,

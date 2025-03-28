@@ -37,6 +37,12 @@ dependencies:
   google_fonts: ^6.2.1
   svg_flutter: ^0.0.1
   speech_to_text: ^7.0.0
+  http: ^1.3.0
+  dotenv: ^4.2.0
+  flutter_dotenv: ^5.2.1
+  go_router: ^14.7.2
+  
+
   
 
 dev_dependencies:
@@ -65,7 +71,7 @@ flutter:
   assets:
     - assets/images/
     - assets/sounds/
-    
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

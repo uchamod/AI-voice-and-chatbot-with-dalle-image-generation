@@ -1,0 +1,1 @@
+bool isChatPage = false;

@@ -1,5 +1,6 @@
 import 'package:ai_assistent_with_chatgpt/pages/chat/chatpage.dart';
 import 'package:ai_assistent_with_chatgpt/pages/initialpage/initialpage.dart';
+import 'package:ai_assistent_with_chatgpt/utils/global_varible.dart';
 import 'package:ai_assistent_with_chatgpt/widgets/homewidgets/searchbar.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -16,6 +17,7 @@ class _HomepageState extends State<Homepage> {
   final TextEditingController _controller = TextEditingController();
   final SpeechToText _speechToText = SpeechToText();
   bool isSpeechEnabeld = false;
+
   String recognizedText = '';
 
   @override
@@ -54,6 +56,12 @@ class _HomepageState extends State<Homepage> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -63,7 +71,7 @@ class _HomepageState extends State<Homepage> {
           child: Column(
             children: [
               Expanded(
-                child: recognizedText == ""
+                child: recognizedText.isEmpty
                     ? Initialpage()
                     : Chatpage(question: recognizedText),
               ),
@@ -71,6 +79,20 @@ class _HomepageState extends State<Homepage> {
               //textbox
 
               QuesionBar(
+                controller: _controller,
+                tapToSearch: (String text) {
+                  setState(() {
+                    recognizedText = _controller.text;
+                    if (isChatPage) {
+                      print("chat status ${isChatPage}");
+                      setState(() {});
+                    }
+                    print(recognizedText);
+                    if (recognizedText.isNotEmpty) {
+                      _controller.clear();
+                    }
+                  });
+                },
                 tapToListen: () async {
                   if (_speechToText.isNotListening &
                       await _speechToText.hasPermission) {
@@ -83,7 +105,6 @@ class _HomepageState extends State<Homepage> {
                     _initSpeech();
                   }
                 },
-                controller: _controller,
               ),
             ],
           ),
