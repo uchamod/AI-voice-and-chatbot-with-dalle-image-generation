@@ -1,6 +1,5 @@
 import 'package:ai_assistent_with_chatgpt/pages/chat/chatpage.dart';
 import 'package:ai_assistent_with_chatgpt/pages/initialpage/initialpage.dart';
-import 'package:ai_assistent_with_chatgpt/utils/global_varible.dart';
 import 'package:ai_assistent_with_chatgpt/widgets/homewidgets/searchbar.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -82,15 +81,13 @@ class _HomepageState extends State<Homepage> {
                 controller: _controller,
                 tapToSearch: (String text) {
                   setState(() {
+                    recognizedText = "";
+                  });
+
+                  setState(() {
                     recognizedText = _controller.text;
-                    if (isChatPage) {
-                      print("chat status ${isChatPage}");
-                      setState(() {});
-                    }
-                    print(recognizedText);
-                    if (recognizedText.isNotEmpty) {
-                      _controller.clear();
-                    }
+
+                    _controller.clear();
                   });
                 },
                 tapToListen: () async {
@@ -114,3 +111,9 @@ class _HomepageState extends State<Homepage> {
     );
   }
 }
+
+ // if (isChatPage) {
+                    //   print("chat status ${isChatPage}");
+                    //   setState(() {});
+                    // }
+                //    print(recognizedText);
