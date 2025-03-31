@@ -67,8 +67,9 @@ class _ChatpageState extends State<Chatpage> {
   @override
   void initState() {
     isChatPage = true;
-    _sendChatResponse();
     _getAllConversations();
+    _sendChatResponse();
+
     super.initState();
   }
 
@@ -102,7 +103,9 @@ class _ChatpageState extends State<Chatpage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Homepage(),
+                            builder: (context) => Homepage(
+                              pageChecker: "",
+                            ),
                           ));
                     },
                   ),
@@ -144,128 +147,122 @@ class _ChatpageState extends State<Chatpage> {
                     ),
                   ),
                 );
+              } else {
+                Chatmodel chat = _chatList[index];
+                return Column(
+                  //  if avaliblle
+                  children: [
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        margin: EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                          color: utilQuestionColor,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: utilTextColor, width: 1),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            //question
+                            Text(
+                              chat.request,
+                              style: textChat,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                  offset: Offset(0, 2),
+                                  blurRadius: 2,
+                                  color: utilTextColor.withOpacity(0.25))
+                            ]),
+                        //answer
+                        child: Text(
+                          chat.response,
+                          style: textChat,
+                        ),
+                      ),
+                    )
+                  ],
+                );
               }
-              Chatmodel chat = _chatList[index];
-              return Column(
-                //  if avaliblle
-                children: [
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      margin: EdgeInsets.only(bottom: 10),
-                      decoration: BoxDecoration(
-                        color: utilQuestionColor,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: utilTextColor, width: 1),
-                        // boxShadow: [
-                        //   BoxShadow(
-                        //       offset: Offset(0, 4),
-                        //       blurRadius: 4,
-                        //       color: utilTextColor.withOpacity(0.25))
-                        // ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          //question
-                          Text(
-                            chat.request,
-                            style: textChat,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                                offset: Offset(0, 2),
-                                blurRadius: 2,
-                                color: utilTextColor.withOpacity(0.25))
-                          ]),
-                      //answer
-                      child: Text(
-                        chat.response,
-                        style: textChat,
-                      ),
-                    ),
-                  )
-                ],
-              );
             },
           ),
           SizedBox(
             height: 15,
           ),
-          //question contioner
-          Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              margin: EdgeInsets.only(bottom: 10),
-              decoration: BoxDecoration(
-                color: utilQuestionColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: utilTextColor, width: 1),
-                // boxShadow: [
-                //   BoxShadow(
-                //       offset: Offset(0, 4),
-                //       blurRadius: 4,
-                //       color: utilTextColor.withOpacity(0.25))
-                // ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //question
-                  Text(
-                    widget.question,
-                    style: textChat,
-                  ),
-                ],
+          //question contioner(real time conversation)
+          if (widget.question.isNotEmpty)
+            Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                margin: EdgeInsets.only(bottom: 10),
+                decoration: BoxDecoration(
+                  color: utilQuestionColor,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: utilTextColor, width: 1),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //question
+                    Text(
+                      widget.question,
+                      style: textChat,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
           SizedBox(
             height: 15,
           ),
-          answer.isEmpty
+          answer.isEmpty && widget.question.isNotEmpty
               ? Center(
                   child: CircularProgressIndicator(
                   color: utilpinkColor,
                 ))
-              : Align(
-                  alignment: Alignment.topLeft,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                              offset: Offset(0, 2),
-                              blurRadius: 2,
-                              color: utilTextColor.withOpacity(0.25))
-                        ]),
-                    //answer
-                    child: Text(
-                      answer,
-                      style: textChat,
-                    ),
-                  ),
-                )
+              : answer.isNotEmpty
+                  ? Align(
+                      alignment: Alignment.topLeft,
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                  offset: Offset(0, 2),
+                                  blurRadius: 2,
+                                  color: utilTextColor.withOpacity(0.25))
+                            ]),
+                        //answer
+                        child: Text(
+                          answer,
+                          style: textChat,
+                        ),
+                      ),
+                    )
+                  : SizedBox()
+          //
         ],
       ),
     );

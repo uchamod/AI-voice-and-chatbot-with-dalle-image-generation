@@ -1,6 +1,7 @@
-import 'package:ai_assistent_with_chatgpt/pages/chat/chatpage.dart';
+import 'package:ai_assistent_with_chatgpt/pages/home/homepage.dart';
 import 'package:ai_assistent_with_chatgpt/services/image%20generation/dalle_img.dart';
 import 'package:ai_assistent_with_chatgpt/utils/colors..dart';
+import 'package:ai_assistent_with_chatgpt/utils/global_varible.dart';
 import 'package:ai_assistent_with_chatgpt/widgets/homewidgets/categoryCard.dart';
 import 'package:ai_assistent_with_chatgpt/widgets/homewidgets/herosection.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 class Initialpage extends StatelessWidget {
   const Initialpage({super.key});
 
+  @override
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -24,10 +26,9 @@ class Initialpage extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Chatpage(
-                      question: "",
-                    ),
-                  ));
+                      builder: (context) => Homepage(
+                            pageChecker: chatPageKey,
+                          )));
             },
             child: CategoryCard(
               title: "Real Time Chat",
@@ -42,10 +43,9 @@ class Initialpage extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Chatpage(
-                      question: "",
-                    ),
-                  ));
+                      builder: (context) => Homepage(
+                            pageChecker: chatPageKey,
+                          )));
             },
             child: CategoryCard(
               title: "Voice Assistant",

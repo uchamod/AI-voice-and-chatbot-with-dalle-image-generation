@@ -6,7 +6,8 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+  final String pageChecker;
+  const Homepage({super.key, required this.pageChecker});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -66,17 +67,17 @@ class _HomepageState extends State<Homepage> {
       child: Scaffold(
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          //
           child: Column(
             children: [
               Expanded(
-                child: recognizedText.isEmpty
-                    ? Initialpage()
-                    : Chatpage(question: recognizedText),
+                child:
+                    recognizedText.isEmpty && widget.pageChecker.isEmpty
+                        ? Initialpage()
+                        : Chatpage(question: recognizedText),
               ),
-
+                  
               //textbox
-
+                  
               QuesionBar(
                 hintText: "Ask anything...",
                 searchBarIcon: Icons.attach_file_rounded,
@@ -85,10 +86,10 @@ class _HomepageState extends State<Homepage> {
                   setState(() {
                     recognizedText = "";
                   });
-
+                  
                   setState(() {
                     recognizedText = _controller.text;
-
+                  
                     _controller.clear();
                   });
                 },
@@ -107,7 +108,6 @@ class _HomepageState extends State<Homepage> {
               ),
             ],
           ),
-          //
         ),
       ),
     );
