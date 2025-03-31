@@ -78,6 +78,8 @@ class _HomepageState extends State<Homepage> {
               //textbox
 
               QuesionBar(
+                hintText: "Ask anything...",
+                searchBarIcon: Icons.attach_file_rounded,
                 controller: _controller,
                 tapToSearch: (String text) {
                   setState(() {

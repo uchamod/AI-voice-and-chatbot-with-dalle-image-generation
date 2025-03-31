@@ -1,4 +1,5 @@
 import 'package:ai_assistent_with_chatgpt/model/chatModel.dart';
+import 'package:ai_assistent_with_chatgpt/pages/home/homepage.dart';
 import 'package:ai_assistent_with_chatgpt/services/chatresponse/Chat_response.dart';
 import 'package:ai_assistent_with_chatgpt/utils/colors..dart';
 import 'package:ai_assistent_with_chatgpt/utils/global_varible.dart';
@@ -21,7 +22,9 @@ class _ChatpageState extends State<Chatpage> {
   //on real time chat
   void _sendChatResponse() async {
     await Future.delayed(Duration(seconds: 2)); // Add delay
-
+    if (widget.question == "") {
+      return;
+    }
     String response = await _chatResponse.getChatResponse(widget.question);
     print(response);
     setState(() {
@@ -96,7 +99,11 @@ class _ChatpageState extends State<Chatpage> {
                       color: utilTextColor,
                     ),
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Homepage(),
+                          ));
                     },
                   ),
                   Text("HomePage", style: textSubTiitle)

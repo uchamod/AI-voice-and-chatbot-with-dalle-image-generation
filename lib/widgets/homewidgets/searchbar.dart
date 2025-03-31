@@ -6,11 +6,15 @@ class QuesionBar extends StatelessWidget {
   final TextEditingController controller;
   final Function() tapToListen;
   final void Function(String)? tapToSearch;
+  final String hintText;
+  final IconData searchBarIcon;
   const QuesionBar(
       {super.key,
       required this.controller,
       required this.tapToListen,
-      required this.tapToSearch});
+      required this.tapToSearch,
+      required this.hintText,
+      required this.searchBarIcon});
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +26,10 @@ class QuesionBar extends StatelessWidget {
       cursorColor: utilSerchColor,
       onFieldSubmitted: tapToSearch,
       decoration: InputDecoration(
-        hintText: "Ask anything...",
+        hintText: hintText,
         hintStyle: textSearch,
         prefixIcon: Icon(
-          Icons.attach_file_rounded,
+          searchBarIcon,
           color: utilSerchColor,
           size: 28,
         ),
