@@ -1,5 +1,5 @@
 import 'package:ai_assistent_with_chatgpt/pages/home/homepage.dart';
-import 'package:ai_assistent_with_chatgpt/services/image%20generation/dalle_img.dart';
+import 'package:ai_assistent_with_chatgpt/pages/image_generation/dalle_img.dart';
 import 'package:ai_assistent_with_chatgpt/utils/colors..dart';
 import 'package:ai_assistent_with_chatgpt/utils/global_varible.dart';
 import 'package:ai_assistent_with_chatgpt/widgets/homewidgets/categoryCard.dart';

@@ -114,8 +114,3 @@ class _HomepageState extends State<Homepage> {
   }
 }
 
- // if (isChatPage) {
-                    //   print("chat status ${isChatPage}");
-                    //   setState(() {});
-                    // }
-                //    print(recognizedText);
