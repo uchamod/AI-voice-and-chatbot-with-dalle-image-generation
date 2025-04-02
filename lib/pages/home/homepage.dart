@@ -1,5 +1,8 @@
+import 'package:ai_assistent_with_chatgpt/model/chatModel.dart';
 import 'package:ai_assistent_with_chatgpt/pages/chat/chatpage.dart';
 import 'package:ai_assistent_with_chatgpt/pages/initialpage/initialpage.dart';
+import 'package:ai_assistent_with_chatgpt/services/chatresponse/Chat_response.dart';
+import 'package:ai_assistent_with_chatgpt/utils/global_varible.dart';
 import 'package:ai_assistent_with_chatgpt/widgets/homewidgets/searchbar.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -19,12 +22,6 @@ class _HomepageState extends State<Homepage> {
   bool isSpeechEnabeld = false;
 
   String recognizedText = '';
-
-  @override
-  void initState() {
-    _initSpeech();
-    super.initState();
-  }
 
   /// This has to happen only once per app
   void _initSpeech() async {
@@ -49,16 +46,53 @@ class _HomepageState extends State<Homepage> {
 
   /// This is the callback that the SpeechToText plugin calls when
   /// the platform returns recognized words.
-  void _onSpeechResult(SpeechRecognitionResult result) {
+  void _onSpeechResult(SpeechRecognitionResult result)  {
     setState(() {
       recognizedText = result.recognizedWords;
     });
+   
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  //for real time chat model
+  List<Chatmodel> _chatList = [];
+  final ChatResponse _chatResponse = ChatResponse();
+  String answer = "";
+  //on real time chat
+  Future<void> _sendChatResponse() async {
+    await Future.delayed(Duration(seconds: 2)); // Add delay
+    if (_controller.text == "") {
+      return;
+    }
+    String response = await _chatResponse.getChatResponse(recognizedText);
+    print(response);
+    setState(() {
+      answer = response;
+    });
+  }
+
+  //get existing conversations
+  Future<void> _getAllConversations() async {
+    List<Chatmodel> existingChatList = await _chatResponse.getAllChat();
+    print("chatList ${existingChatList[0]}");
+    setState(() {
+      _chatList = existingChatList;
+    });
+  }
+
+  @override
+  void initState() {
+    _initSpeech();
+    isChatPage = true;
+
+    _getAllConversations();
+
+    super.initState();
   }
 
   @override
@@ -70,26 +104,27 @@ class _HomepageState extends State<Homepage> {
           child: Column(
             children: [
               Expanded(
-                child:
-                    recognizedText.isEmpty && widget.pageChecker.isEmpty
-                        ? Initialpage()
-                        : Chatpage(question: recognizedText),
+                child: recognizedText.isEmpty && widget.pageChecker.isEmpty
+                    ? Initialpage()
+                    : Chatpage(
+                        question: recognizedText,
+                        chatModel: _chatList,
+                        response: answer,
+                      ),
               ),
-                  
+
               //textbox
-                  
+
               QuesionBar(
                 hintText: "Ask anything...",
                 searchBarIcon: Icons.attach_file_rounded,
                 controller: _controller,
-                tapToSearch: (String text) {
-                  setState(() {
-                    recognizedText = "";
-                  });
-                  
-                  setState(() {
+                tapToSearch: (String text) async {
+                  recognizedText = "";
+                  await _getAllConversations();
+                  setState(() async {
                     recognizedText = _controller.text;
-                  
+                    await _sendChatResponse();
                     _controller.clear();
                   });
                 },
@@ -113,4 +148,3 @@ class _HomepageState extends State<Homepage> {
     );
   }
 }
-

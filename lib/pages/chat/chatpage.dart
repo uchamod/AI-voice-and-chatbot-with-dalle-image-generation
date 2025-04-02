@@ -2,13 +2,18 @@ import 'package:ai_assistent_with_chatgpt/model/chatModel.dart';
 import 'package:ai_assistent_with_chatgpt/pages/home/homepage.dart';
 import 'package:ai_assistent_with_chatgpt/services/chatresponse/Chat_response.dart';
 import 'package:ai_assistent_with_chatgpt/utils/colors..dart';
-import 'package:ai_assistent_with_chatgpt/utils/global_varible.dart';
 import 'package:ai_assistent_with_chatgpt/utils/styles.dart';
 import 'package:flutter/material.dart';
 
 class Chatpage extends StatefulWidget {
   final String question;
-  const Chatpage({super.key, required this.question});
+  final List<Chatmodel> chatModel;
+  dynamic response;
+  Chatpage(
+      {super.key,
+      required this.question,
+      required this.chatModel,
+      this.response});
 
   @override
   State<Chatpage> createState() => _ChatpageState();
@@ -17,30 +22,6 @@ class Chatpage extends StatefulWidget {
 class _ChatpageState extends State<Chatpage> {
   final ChatResponse _chatResponse = ChatResponse();
   final ScrollController _controller = ScrollController();
-  List<Chatmodel> _chatList = [];
-  String answer = "";
-  //on real time chat
-  void _sendChatResponse() async {
-    await Future.delayed(Duration(seconds: 2)); // Add delay
-    if (widget.question == "") {
-      return;
-    }
-    String response = await _chatResponse.getChatResponse(widget.question);
-    print(response);
-    setState(() {
-      answer = response;
-    });
-  }
-
-  //get existing conversations
-  Future<void> _getAllConversations() async {
-    List<Chatmodel> existingChatList = await _chatResponse.getAllChat();
-    print("chatList ${existingChatList[0]}");
-    setState(() {
-      _chatList = existingChatList;
-    });
-  }
-
   //romove existing chat from memory
   Future<void> removeChatFromDevice(BuildContext context) async {
     bool isRemove = await _chatResponse.clearChat();
@@ -64,12 +45,22 @@ class _ChatpageState extends State<Chatpage> {
           );
   }
 
+  //   //on real time chat
+  Future<void> _sendChatResponse() async {
+    await Future.delayed(Duration(seconds: 2)); // Add delay
+    if (widget.response.isNotEmpty) {
+      return;
+    }
+    String response = await _chatResponse.getChatResponse(widget.question);
+    print(response);
+    setState(() {
+      widget.response = response;
+    });
+  }
+
   @override
   void initState() {
-    isChatPage = true;
-    _getAllConversations();
     _sendChatResponse();
-
     super.initState();
   }
 
@@ -126,12 +117,12 @@ class _ChatpageState extends State<Chatpage> {
           //list the conversations
           ListView.builder(
             controller: _controller,
-            itemCount: _chatList.length,
+            itemCount: widget.chatModel.length,
             physics: NeverScrollableScrollPhysics(),
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              if (_chatList.isEmpty) {
+              if (widget.chatModel.isEmpty) {
                 return Padding(
                   //if no connversations avalible
                   padding:
@@ -148,7 +139,7 @@ class _ChatpageState extends State<Chatpage> {
                   ),
                 );
               } else {
-                Chatmodel chat = _chatList[index];
+                Chatmodel chat = widget.chatModel[index];
                 return Column(
                   //  if avaliblle
                   children: [
@@ -234,12 +225,12 @@ class _ChatpageState extends State<Chatpage> {
           SizedBox(
             height: 15,
           ),
-          answer.isEmpty && widget.question.isNotEmpty
+          widget.response.isEmpty && widget.question.isNotEmpty
               ? Center(
                   child: CircularProgressIndicator(
                   color: utilpinkColor,
                 ))
-              : answer.isNotEmpty
+              : widget.response.isNotEmpty
                   ? Align(
                       alignment: Alignment.topLeft,
                       child: Container(
@@ -256,7 +247,7 @@ class _ChatpageState extends State<Chatpage> {
                             ]),
                         //answer
                         child: Text(
-                          answer,
+                          widget.response,
                           style: textChat,
                         ),
                       ),
