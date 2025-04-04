@@ -5,18 +5,20 @@ import 'package:http/http.dart' as http;
 
 class ImageServices {
   //generate image using dalle API
-  final apiKey = dotenv.env['DALLEAPIKEY'] ?? "";
+  final apiKey = dotenv.env['REPLICANTAPI'] ?? "";
   Future<String> dalleImageGenerater(String promte) async {
     try {
       final response = await http.post(
-        Uri.parse("https://api.openai.com/v1/images/generations"),
+        Uri.parse("https://api.replicate.com/v1/predictions"),
         headers: {
           'Authorization': 'Bearer $apiKey',
           'Content-Type': 'application/json',
         },
-        body: jsonEncode(
-          {"model": "dall-e-3", "prompt": promte, "n": 1, "size": "1024x1024"},
-        ),
+        body: jsonEncode({
+          "version":
+              "6f7a773af6fc3e8de9d5a3c00be77c17308914bf67772726aff83496ba1e3bbe",
+          "input": {"prompt": promte}
+        }),
       );
 
       if (response.statusCode == 200) {
